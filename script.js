@@ -1,3 +1,6 @@
+let playerX;
+let playerO;
+
 // store gameMoves inside a gameBoard object
 // gameBoard object listens for moves and updates the gameboard
 const gameBoard = (function() {
@@ -7,11 +10,16 @@ const gameBoard = (function() {
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
         grid.addEventListener(`click`, (e) => {
+            if (!playerX) {                             // instantiates playerX object if input is blank
+                playerX = Player(`anonymous`, `X`);
+            } else if (!playerO) {                      // instantiates playerO object if input is blank
+                playerO = Player(`anonymous`, `O`);
+            }
             const index = e.currentTarget.dataset.indexNumber;
             if (!e.currentTarget.textContent) {
-                gameMoves.splice(index, 1, `O`);
+                gameMoves.splice(index, 1, playerX.marker);
                 displayMoves();
-                console.log(`clicked`);
+                console.log(`clicked`); 
             }
         })
     })
@@ -23,7 +31,7 @@ const gameBoard = (function() {
     }
 
     return {
-        gameMoves: gameMoves
+        gameMoves,
     }
 })();
 
@@ -32,32 +40,33 @@ const gameBoard = (function() {
 const Player = (name, marker) => {
     const getName = () => name;
     const getMarker = () => marker;
-    return {name, marker}
+    function toggleMarker() {
+        console.log(this.marker);
+        console.log(!this.marker);
+        this.marker != this.marker;
+    }
+    return {name, marker, toggleMarker};
 }
-
-
-
 
 // game module tracks player's turn and checks for winner
 // game module declares winner
 // game module resets game
 const executeGame = (function() {
     const nameField = document.querySelectorAll(`.nameInputs`);
-    let playerX;
-    let playerO;
+
     nameField.forEach( (input) => {
         input.addEventListener(`change`, (e) => {
-            const playerName = e.target.value;
-            const playerMarker = e.target.dataset.marker;
+            const userName = e.target.value;
+            const userMarker = e.target.dataset.marker;
             if (e.target.dataset.marker === `X`) {
-                playerX = Player(playerName, playerMarker);
+                playerX = Player(userName, userMarker);
                 console.log(playerX);
             } else {
-                playerO = Player(playerName, playerMarker);
+                playerO = Player(userName, userMarker);
                 console.log(playerO);
             }
         })
     })
-    console.log(playerX);
-    return {playerX, playerO}
+    // console.log(playerX);
+    // return {playerX, playerO}
 })();
