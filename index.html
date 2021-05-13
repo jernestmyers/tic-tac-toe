@@ -5,9 +5,17 @@
         <meta charset="utf-8">
         <title>library</title>
         <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap" rel="stylesheet">
     </head>
 
     <body>
+        <div id="user-settings">
+            <label for="playerX">Player X: </label>
+            <input class="nameInputs" data-marker="X" name="playerX" type="text" placeholder="Enter a name">
+            <label for="playerO">Player O: </label>
+            <input class="nameInputs" data-marker="O" name="playerO" type="text" placeholder="Enter a name">
+        </div>
         <div id="gameboard-container">
             <table id="gameboard">
                 <tr>
