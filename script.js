@@ -6,27 +6,37 @@ let playerO;
 const gameBoard = (function() {
 
     let gameMoves = [null, null, null, null, null, null, null, null, null];
+    let currentMove;
+    // let movesMade = 0;
 
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
         grid.addEventListener(`click`, (e) => {
             if (!playerX) {                             // instantiates playerX object if input is blank
                 playerX = Player(`anonymous`, `X`);
-            } else if (!playerO) {                      // instantiates playerO object if input is blank
+                currentMove = playerX.marker;
+            }
+            if (!playerO) {                      // instantiates playerO object if input is blank
                 playerO = Player(`anonymous`, `O`);
             }
             const index = e.currentTarget.dataset.indexNumber;
             if (!e.currentTarget.textContent) {
-                gameMoves.splice(index, 1, playerX.marker);
+                gameMoves.splice(index, 1, currentMove);
                 displayMoves();
-                console.log(`clicked`); 
+                checkForWinner();
+                console.log(gameMoves);
             }
         })
     })
 
     function displayMoves() {
-        gameMoves.forEach( (move, index) => {
-            gridsToSelect[index].textContent = move;
+        gameMoves.forEach( (moveToDisplay, index) => {
+            gridsToSelect[index].textContent = moveToDisplay;
+            if (currentMove === playerX.marker) {
+                currentMove = playerO.marker;
+            } else {
+                currentMove = playerX.marker;
+            }
         })
     }
 
@@ -40,15 +50,10 @@ const gameBoard = (function() {
 const Player = (name, marker) => {
     const getName = () => name;
     const getMarker = () => marker;
-    function toggleMarker() {
-        console.log(this.marker);
-        console.log(!this.marker);
-        this.marker != this.marker;
-    }
-    return {name, marker, toggleMarker};
+    return {name, marker};
 }
 
-// game module tracks player's turn and checks for winner
+// game module checks for winner
 // game module declares winner
 // game module resets game
 const executeGame = (function() {
@@ -70,3 +75,11 @@ const executeGame = (function() {
     // console.log(playerX);
     // return {playerX, playerO}
 })();
+
+function checkForWinner() {
+    let board = gameBoard.gameMoves;
+    console.log(board)
+    if ((board[0] === board[1]) && (board[1] === board[2])) {
+        return console.log(`winner`);
+    }
+}
