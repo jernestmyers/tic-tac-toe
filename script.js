@@ -7,7 +7,7 @@ let gameOver;
 const gameBoard = (function() {
 
     let gameMoves = [null, null, null, null, null, null, null, null, null];
-    let currentMove;
+    let currentMove = `X`;
 
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
@@ -16,14 +16,14 @@ const gameBoard = (function() {
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
             }
-            if (!playerO) {                      // instantiates playerO object if input is blank
+            if (!playerO) {                             // instantiates playerO object if input is blank
                 playerO = Player(`anonymous`, `O`);
             }
             const index = e.currentTarget.dataset.indexNumber;
             if (!gameOver && !e.currentTarget.textContent) {
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves();
-                executeGame.checkForWinner();
+                executeGame.checkForWinner(currentMove);
                 console.log(gameOver);
             }
         })
@@ -42,7 +42,7 @@ const gameBoard = (function() {
 
     return {
         gameMoves,
-        currentMove,
+        displayMoves,
     }
 })();
 
@@ -59,6 +59,13 @@ const Player = (name, marker) => {
 // game module resets game
 const executeGame = (function() {
     const nameField = document.querySelectorAll(`.nameInputs`);
+    const gameModeButtons = document.querySelectorAll(`.chooseGame`)
+
+    gameModeButtons.forEach( (button) => {
+        button.addEventListener(`click`, (e) => {
+            console.log(e.currentTarget.id);
+        })
+    })
 
     nameField.forEach( (input) => {
         input.addEventListener(`change`, (e) => {
@@ -74,7 +81,7 @@ const executeGame = (function() {
         })
     })
 
-    function checkForWinner() {
+    function checkForWinner(currentMove) {
         let board = gameBoard.gameMoves;
         console.log(board)
         if (
@@ -89,7 +96,7 @@ const executeGame = (function() {
             ) 
             { 
                 gameOver = true;
-                declareWinner(gameBoard.currentMove);
+                declareWinner(currentMove);
             }
     }
 
@@ -107,3 +114,20 @@ const executeGame = (function() {
                 declareWinner,
             }
 })();
+
+
+// have functionality for 1 player or 2 player, currently code is for 2 player only
+// ***** vs cpu EASY: computer can generate a random index number [i] between 0 and 8
+// *****    if array[i] is null, computer makes move and computerMoved === true
+// *****    else if: computer generates a new index and tries to make a move  
+// have functionality for 'play again' vs 'change settings'
+
+let computerPlayEasy = () => {
+    let cpuIndex = Math.floor(Math.random() * 9);
+    console.log(cpuIndex);
+    if (!gameBoard.gameMoves[cpuIndex]) {
+        gameBoard.gameMoves[cpuIndex] = `O`;
+        // currentMove = playerX.marker;
+        gameBoard.displayMoves();
+    }
+}
