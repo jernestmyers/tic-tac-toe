@@ -1,5 +1,6 @@
 let playerX;
 let playerO;
+let gameOver;
 
 // store gameMoves inside a gameBoard object
 // gameBoard object listens for moves and updates the gameboard
@@ -7,7 +8,6 @@ const gameBoard = (function() {
 
     let gameMoves = [null, null, null, null, null, null, null, null, null];
     let currentMove;
-    // let movesMade = 0;
 
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
@@ -20,16 +20,16 @@ const gameBoard = (function() {
                 playerO = Player(`anonymous`, `O`);
             }
             const index = e.currentTarget.dataset.indexNumber;
-            if (!e.currentTarget.textContent) {
+            if (!gameOver && !e.currentTarget.textContent) {
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves();
-                checkForWinner();
-                console.log(gameMoves);
+                executeGame.checkForWinner();
+                console.log(gameOver);
             }
         })
     })
 
-    function displayMoves() {
+    function displayMoves() {                           // also toggles player marker
         gameMoves.forEach( (moveToDisplay, index) => {
             gridsToSelect[index].textContent = moveToDisplay;
             if (currentMove === playerX.marker) {
@@ -42,6 +42,7 @@ const gameBoard = (function() {
 
     return {
         gameMoves,
+        currentMove,
     }
 })();
 
@@ -72,14 +73,37 @@ const executeGame = (function() {
             }
         })
     })
-    // console.log(playerX);
-    // return {playerX, playerO}
-})();
 
-function checkForWinner() {
-    let board = gameBoard.gameMoves;
-    console.log(board)
-    if ((board[0] === board[1]) && (board[1] === board[2])) {
-        return console.log(`winner`);
+    function checkForWinner() {
+        let board = gameBoard.gameMoves;
+        console.log(board)
+        if (
+            (board[0] && (board[0] === board[1]) && (board[1] === board[2])) ||
+            (board[3] && (board[3] === board[4]) && (board[4] === board[5])) ||
+            (board[6] && (board[6] === board[7]) && (board[7] === board[8])) ||
+            (board[0] && (board[0] === board[3]) && (board[3] === board[6])) ||
+            (board[1] && (board[1] === board[4]) && (board[4] === board[7])) ||
+            (board[2] && (board[2] === board[5]) && (board[5] === board[8])) ||
+            (board[0] && (board[0] === board[4]) && (board[4] === board[8])) ||
+            (board[2] && (board[2] === board[4]) && (board[4] === board[6]))
+            ) 
+            { 
+                gameOver = true;
+                declareWinner(gameBoard.currentMove);
+            }
     }
-}
+
+    function declareWinner(move) {
+        if (move === playerO.marker) {
+            alert(`player x wins!`);
+        }
+        if (move === playerX.marker) {
+            alert(`player o wins!`)
+        }
+    }
+
+    return { 
+                checkForWinner, 
+                declareWinner,
+            }
+})();
