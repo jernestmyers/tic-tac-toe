@@ -3,22 +3,38 @@ html, body {
     padding: 0px;
     font-family: 'Lato', sans-serif;
     font-size: 20px;
+    background-color: #D5DFE5;
+    color: #0F0F0F;
 }
 
 table {
     margin: auto;
     border-collapse: collapse;
+    color: #0F0F0F;
 }
 
 td {
     font-size: 5em;
     text-align: center;
-    border: 1px solid red;
+    border-right: 5px solid #0F0F0F;
     height: 175px;
     width: 175px;
 }
 
+tr {
+    border-bottom: 5px solid #0F0F0F;
+}
+
+tr:last-child {
+    border-bottom: none;
+}
+
+td:last-child {
+    border-right: none;
+}
+
 button, input, label {
+    border: none;
     padding: 0px;
     margin: 0px;
     font-size: 0.75em;
@@ -26,18 +42,36 @@ button, input, label {
     width: 100px;
 }
 
+button {
+    margin-right: 20px;
+    background-color: #E5EBEF;
+}
+
+label {
+    background-color: #D5DFE5;
+    padding-right: 5px;
+}
+
 input {
-    padding-top: 10px;
+    background-color: #E5EBEF;
+    margin-top: 10px;
+    margin-right: 10px;
     height: 30px;
     width: 150px;
     padding-left: 10px;
 }
 
 #user-settings {
-    margin: 0.5em 0;
+    height: 100px;
+    margin: 10px 0;
     text-align: center;
 }
 
 button:hover {
+    background-color: #3C5462;
+    color: #F0F4F6;
+}
+
+.alertWindow {
     background-color: red;
 }
