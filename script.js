@@ -1,9 +1,10 @@
 let playerX;
 let playerO;
 let gameOver;
+let onePlayer;
+let twoPlayer;
 
-// store gameMoves inside a gameBoard object
-// gameBoard object listens for moves and updates the gameboard
+// gameBoard listens for moves and updates the gameboard
 const gameBoard = (function() {
 
     let gameMoves = [null, null, null, null, null, null, null, null, null];
@@ -16,20 +17,28 @@ const gameBoard = (function() {
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
             }
-            if (!playerO) {                             // instantiates playerO object if input is blank
+            if (!playerO && twoPlayer) {                // instantiates playerO object if input is blank and two player game is selected
                 playerO = Player(`anonymous`, `O`);
             }
             const index = e.currentTarget.dataset.indexNumber;
-            if (!gameOver && !e.currentTarget.textContent) {
+            if (!gameOver && !e.currentTarget.textContent && twoPlayer) {   // populates the board for a two-player game
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves();
                 executeGame.checkForWinner(currentMove);
-                console.log(gameOver);
+            }
+            if (!gameOver && !e.currentTarget.textContent && onePlayer && currentMove === `X`) {    // populates the board for a one person game vs computer
+                gameMoves.splice(index, 1, currentMove);
+                displayMoves();
+                executeGame.checkForWinner(currentMove);
+                const numberOfMoves = gameMoves.filter(move => move).length;
+                while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8) {
+                    executeGame.computerPlayEasy();
+                }
             }
         })
     })
 
-    function displayMoves() {                           // also toggles player marker
+    function displayMoves() {       // also toggles player marker
         gameMoves.forEach( (moveToDisplay, index) => {
             gridsToSelect[index].textContent = moveToDisplay;
             if (currentMove === playerX.marker) {
@@ -37,7 +46,7 @@ const gameBoard = (function() {
             } else {
                 currentMove = playerX.marker;
             }
-        })
+        });
     }
 
     return {
@@ -47,43 +56,89 @@ const gameBoard = (function() {
 })();
 
 
-// use a factory function to create playerX and playerO and return the name and marker
+// factory function to create playerX and playerO
 const Player = (name, marker) => {
     const getName = () => name;
     const getMarker = () => marker;
     return {name, marker};
 }
 
-// game module checks for winner
-// game module declares winner
-// game module resets game
+// game module handles UI, checks/decalres winner, generates computer play, instantiates players
 const executeGame = (function() {
-    const nameField = document.querySelectorAll(`.nameInputs`);
-    const gameModeButtons = document.querySelectorAll(`.chooseGame`)
 
+    const gameModeButtons = document.querySelectorAll(`.chooseGame`)
     gameModeButtons.forEach( (button) => {
         button.addEventListener(`click`, (e) => {
-            console.log(e.currentTarget.id);
-        })
-    })
-
-    nameField.forEach( (input) => {
-        input.addEventListener(`change`, (e) => {
-            const userName = e.target.value;
-            const userMarker = e.target.dataset.marker;
-            if (e.target.dataset.marker === `X`) {
-                playerX = Player(userName, userMarker);
-                console.log(playerX);
-            } else {
-                playerO = Player(userName, userMarker);
-                console.log(playerO);
+            if (!onePlayer && !twoPlayer) {
+                if (e.currentTarget.id === `twoPlayer`) {
+                    twoPlayer = true;
+                    displayNameFields();
+                } else {
+                    onePlayer = true;
+                    playerO = Player(`Bot`, `O`);
+                    displayNameFields();
+                }
             }
         })
     })
 
+    function displayNameFields() {      // creates appropriate name inputs when button for number of players is selected
+        const userSettings = document.querySelector(`#inputs-container`);
+        if (onePlayer || twoPlayer) {
+            const labelX = document.createElement(`label`);
+            labelX.textContent = `Player X: `;
+            labelX.setAttribute(`for`, `playerX`);
+            userSettings.appendChild(labelX);
+
+            const inputX = document.createElement(`input`);
+            inputX.setAttribute(`type`, `text`);
+            inputX.setAttribute(`placeholder`, `enter a name`);
+            inputX.setAttribute(`class`, `nameInputs`);
+            inputX.setAttribute(`data-marker`, `X`);
+            inputX.setAttribute(`name`, `playerX`);
+            userSettings.appendChild(inputX);
+        }
+        if (twoPlayer) {
+            const labelO = document.createElement(`label`);
+            labelO.textContent = `Player O: `;
+            labelO.setAttribute(`for`, `playerO`);
+            userSettings.appendChild(labelO);
+
+            const inputO = document.createElement(`input`);
+            inputO.setAttribute(`type`, `text`);
+            inputO.setAttribute(`placeholder`, `enter a name`);
+            inputO.setAttribute(`class`, `nameInputs`);
+            inputO.setAttribute(`data-marker`, `O`);
+            inputO.setAttribute(`name`, `playerO`);
+            userSettings.appendChild(inputO);
+        }
+        const nameField = document.querySelectorAll(`.nameInputs`);
+        nameField.forEach( (input) => {
+            input.addEventListener(`change`, (e) => {
+                const userName = e.target.value;
+                const userMarker = e.target.dataset.marker;
+                if (e.target.dataset.marker === `X`) {
+                    playerX = Player(userName, userMarker);
+                } else if (twoPlayer) {
+                    playerO = Player(userName, userMarker);
+                }
+            })
+        })
+    }
+
+    let computerPlayEasy = () => {
+        let cpuIndex = Math.floor(Math.random() * 9);
+        if (!gameBoard.gameMoves[cpuIndex]) {
+            gameBoard.gameMoves[cpuIndex] = `O`;
+            gameBoard.displayMoves();
+        }
+        executeGame.checkForWinner(`X`);
+    }
+
     function checkForWinner(currentMove) {
         let board = gameBoard.gameMoves;
-        console.log(board)
+        let movesMade = gameBoard.gameMoves.filter(moves => moves).length
+
         if (
             (board[0] && (board[0] === board[1]) && (board[1] === board[2])) ||
             (board[3] && (board[3] === board[4]) && (board[4] === board[5])) ||
@@ -97,37 +152,37 @@ const executeGame = (function() {
             { 
                 gameOver = true;
                 declareWinner(currentMove);
+            } else if (movesMade === 9) {
+                alert(`Tie game!`);
             }
     }
 
     function declareWinner(move) {
         if (move === playerO.marker) {
-            alert(`player x wins!`);
+            if (playerX.name === `anonymous`) {
+                alert(`Player X wins!`);
+            } else {
+                alert(`${playerX.name} wins!`)
+            }
         }
         if (move === playerX.marker) {
-            alert(`player o wins!`)
+            if (playerO.name === `anonymous`) {
+                alert(`Player O wins!`);
+            } else {
+                alert(`${playerO.name} wins!`)
+            }
         }
     }
 
     return { 
                 checkForWinner, 
                 declareWinner,
+                computerPlayEasy,
             }
 })();
 
 
-// have functionality for 1 player or 2 player, currently code is for 2 player only
-// ***** vs cpu EASY: computer can generate a random index number [i] between 0 and 8
-// *****    if array[i] is null, computer makes move and computerMoved === true
-// *****    else if: computer generates a new index and tries to make a move  
+
 // have functionality for 'play again' vs 'change settings'
 
-let computerPlayEasy = () => {
-    let cpuIndex = Math.floor(Math.random() * 9);
-    console.log(cpuIndex);
-    if (!gameBoard.gameMoves[cpuIndex]) {
-        gameBoard.gameMoves[cpuIndex] = `O`;
-        // currentMove = playerX.marker;
-        gameBoard.displayMoves();
-    }
-}
+
