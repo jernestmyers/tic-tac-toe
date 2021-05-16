@@ -1,4 +1,6 @@
-body {
+html, body {
+    margin: 0px;
+    padding: 0px;
     font-family: 'Lato', sans-serif;
     font-size: 20px;
 }
@@ -14,4 +16,28 @@ td {
     border: 1px solid red;
     height: 175px;
     width: 175px;
+}
+
+button, input, label {
+    padding: 0px;
+    margin: 0px;
+    font-size: 0.75em;
+    height: 50px;
+    width: 100px;
+}
+
+input {
+    padding-top: 10px;
+    height: 30px;
+    width: 150px;
+    padding-left: 10px;
+}
+
+#user-settings {
+    margin: 0.5em 0;
+    text-align: center;
+}
+
+button:hover {
+    background-color: red;
 }
