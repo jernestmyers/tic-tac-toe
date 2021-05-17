@@ -35,7 +35,9 @@ const gameBoard = (function() {
             if (!gameOver && !e.currentTarget.textContent && onePlayer && currentMove === `X`) {    // populates the board for a one person game vs computer
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves(index, currentMove);
+                console.log(currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
+                console.log(currentMove);
                 numberOfMoves = gameMoves.filter(move => move).length;
                 console.log(numberOfMoves);
                 while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8) {
@@ -94,7 +96,7 @@ const executeGame = (function() {
                     displayNameFields();
                 } else {
                     onePlayer = true;
-                    playerO = Player(`Bot`, `O`);
+                    playerO = Player(`Computer`, `O`);
                     displayNameFields();
                 }
             }
@@ -168,7 +170,6 @@ const executeGame = (function() {
             (board[2] && (board[2] === board[4]) && (board[4] === board[6]))
             ) 
             { 
-                gameOver = true;
                 declareWinner( move );
             } else if (movesMade === 9) {
                 alertWinner(`Tie game!`);
@@ -196,6 +197,7 @@ const executeGame = (function() {
         const resultModal = document.querySelector(`#resultModal`);
         const resultMessage = document.querySelector(`#result-display`);
         const playAgainButton = document.querySelector(`#play-again`);
+        gameOver = true;
         if (result !== `Tie game!`) {
             resultMessage.textContent = `${result} wins!`;
         } else {
