@@ -29,13 +29,13 @@ const gameBoard = (function() {
             const index = e.currentTarget.dataset.indexNumber;
             if (!gameOver && !e.currentTarget.textContent && twoPlayer) {   // populates the board for a two-player game
                 gameMoves.splice(index, 1, currentMove);
-                displayMoves();
-                executeGame.checkForWinner(currentMove);
+                displayMoves(index, currentMove);
+                executeGame.checkForWinner(currentMove, gameMoves);
             }
             if (!gameOver && !e.currentTarget.textContent && onePlayer && currentMove === `X`) {    // populates the board for a one person game vs computer
                 gameMoves.splice(index, 1, currentMove);
-                displayMoves();
-                executeGame.checkForWinner(currentMove);
+                displayMoves(index, currentMove);
+                executeGame.checkForWinner(currentMove, gameMoves);
                 numberOfMoves = gameMoves.filter(move => move).length;
                 console.log(numberOfMoves);
                 while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8) {
@@ -51,17 +51,20 @@ const gameBoard = (function() {
         })
         currentMove = `X`;
         numberOfMoves = null;
+        gameMoves = [null, null, null, null, null, null, null, null, null];
     }
 
-    function displayMoves() {       // also toggles player marker
-        gameMoves.forEach( (moveToDisplay, index) => {
-            gridsToSelect[index].textContent = moveToDisplay;
+    function displayMoves(index, marker) {       // also toggles player marker
+        // gameMoves.forEach( (moveToDisplay, index, gameMoves) => {
+        //     console.log({moveToDisplay});
+        //     gridsToSelect[index].textContent = moveToDisplay;
+        gridsToSelect[index].textContent = marker;
             if (currentMove === playerX.marker) {
                 currentMove = playerO.marker;
             } else {
                 currentMove = playerX.marker;
             }
-        });
+        // });
     }
 
     return {
@@ -146,15 +149,14 @@ const executeGame = (function() {
         let cpuIndex = Math.floor(Math.random() * 9);
         if (!gameBoard.gameMoves[cpuIndex]) {
             gameBoard.gameMoves[cpuIndex] = `O`;
-            gameBoard.displayMoves();
+            gameBoard.displayMoves(cpuIndex, `O`);
         }
-        executeGame.checkForWinner(`X`);
+        executeGame.checkForWinner(`X`, gameBoard.gameMoves);
     }
 
-    function checkForWinner(currentMove) {
-        let board = gameBoard.gameMoves;
-        let movesMade = gameBoard.gameMoves.filter(moves => moves).length
-        console.log(`board: ${board} and movesMade: ${movesMade}`);
+    function checkForWinner( move , board ) {
+        let movesMade = board.filter(moves => moves).length
+        console.log(`board: ${board}, ${move} and movesMade: ${movesMade}`);
         if (
             (board[0] && (board[0] === board[1]) && (board[1] === board[2])) ||
             (board[3] && (board[3] === board[4]) && (board[4] === board[5])) ||
@@ -167,10 +169,8 @@ const executeGame = (function() {
             ) 
             { 
                 gameOver = true;
-                board = null;
-                declareWinner(currentMove);
+                declareWinner( move );
             } else if (movesMade === 9) {
-                board = null;
                 alertWinner(`Tie game!`);
             }
     }
@@ -207,8 +207,8 @@ const executeGame = (function() {
     }
 
     function playAgain() {
-        gameBoard.gameMoves = [null, null, null, null, null, null, null, null, null];
         gameBoard.clearBoard();
+        gameBoard.gameMoves = [null, null, null, null, null, null, null, null, null];
         resultModal.style.display = `none`;
         gameOver = false;
     }
