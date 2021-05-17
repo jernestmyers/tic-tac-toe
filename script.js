@@ -9,10 +9,16 @@ const gameBoard = (function() {
 
     let gameMoves = [null, null, null, null, null, null, null, null, null];
     let currentMove = `X`;
+    // let numberOfMoves = gameMoves.filter(move => move).length;
 
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
         grid.addEventListener(`click`, (e) => {
+            let numberOfMoves = gameMoves.filter(move => move).length;
+            // console.log(e.currentTarget.textContent);
+            // console.log(currentMove);
+            // console.log(onePlayer);
+            // console.log(gameOver);
             if (!playerX) {                             // instantiates playerX object if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
@@ -30,13 +36,22 @@ const gameBoard = (function() {
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves();
                 executeGame.checkForWinner(currentMove);
-                const numberOfMoves = gameMoves.filter(move => move).length;
+                numberOfMoves = gameMoves.filter(move => move).length;
+                console.log(numberOfMoves);
                 while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8) {
                     executeGame.computerPlayEasy();
                 }
             }
         })
     })
+
+    function clearBoard() {
+        gridsToSelect.forEach( (grid) => {
+            grid.textContent = null;
+        })
+        currentMove = `X`;
+        numberOfMoves = null;
+    }
 
     function displayMoves() {       // also toggles player marker
         gameMoves.forEach( (moveToDisplay, index) => {
@@ -52,6 +67,7 @@ const gameBoard = (function() {
     return {
         gameMoves,
         displayMoves,
+        clearBoard,
     }
 })();
 
@@ -138,7 +154,7 @@ const executeGame = (function() {
     function checkForWinner(currentMove) {
         let board = gameBoard.gameMoves;
         let movesMade = gameBoard.gameMoves.filter(moves => moves).length
-
+        console.log(`board: ${board} and movesMade: ${movesMade}`);
         if (
             (board[0] && (board[0] === board[1]) && (board[1] === board[2])) ||
             (board[3] && (board[3] === board[4]) && (board[4] === board[5])) ||
@@ -151,27 +167,50 @@ const executeGame = (function() {
             ) 
             { 
                 gameOver = true;
+                board = null;
                 declareWinner(currentMove);
             } else if (movesMade === 9) {
-                alert(`Tie game!`);
+                board = null;
+                alertWinner(`Tie game!`);
             }
     }
 
     function declareWinner(move) {
         if (move === playerO.marker) {
             if (playerX.name === `anonymous`) {
-                alert(`Player X wins!`);
+                alertWinner(`Player X`);
             } else {
-                alert(`${playerX.name} wins!`)
+                alertWinner(playerX.name);
             }
         }
         if (move === playerX.marker) {
             if (playerO.name === `anonymous`) {
-                alert(`Player O wins!`);
+                alertWinner(`Player O`);
             } else {
-                alert(`${playerO.name} wins!`)
+                alertWinner(playerO.name);
             }
         }
+    }
+
+    function alertWinner(result) {
+        const resultModal = document.querySelector(`#resultModal`);
+        const resultMessage = document.querySelector(`#result-display`);
+        const playAgainButton = document.querySelector(`#play-again`);
+        if (result !== `Tie game!`) {
+            resultMessage.textContent = `${result} wins!`;
+        } else {
+            resultMessage.textContent = result;
+        }
+        resultModal.style.display = `block`;
+        playAgainButton.addEventListener(`click`, playAgain);
+        return {resultModal}
+    }
+
+    function playAgain() {
+        gameBoard.gameMoves = [null, null, null, null, null, null, null, null, null];
+        gameBoard.clearBoard();
+        resultModal.style.display = `none`;
+        gameOver = false;
     }
 
     return { 
@@ -180,9 +219,3 @@ const executeGame = (function() {
                 computerPlayEasy,
             }
 })();
-
-
-
-// have functionality for 'play again' vs 'change settings'
-
-
