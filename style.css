@@ -4,25 +4,25 @@ html, body {
     font-family: 'Lato', sans-serif;
     font-size: 20px;
     background-color: #D5DFE5;
-    color: #0F0F0F;
+    color: #3C5462;
 }
 
 table {
     margin: auto;
     border-collapse: collapse;
-    color: #0F0F0F;
+    color: #3C5462;
 }
 
 td {
     font-size: 5em;
     text-align: center;
-    border-right: 5px solid #0F0F0F;
+    border-right: 5px solid #3C5462;
     height: 175px;
     width: 175px;
 }
 
 tr {
-    border-bottom: 5px solid #0F0F0F;
+    border-bottom: 5px solid #3C5462;
 }
 
 tr:last-child {
@@ -35,16 +35,18 @@ td:last-child {
 
 button, input, label {
     border: none;
+    color: #3C5462;
     padding: 0px;
     margin: 0px;
-    font-size: 0.75em;
-    height: 50px;
+    font-size: 15px;
+    height: 35px;
     width: 100px;
+    outline: none;
 }
 
 button {
-    margin-right: 20px;
     background-color: #E5EBEF;
+    border-radius: 10px;
 }
 
 label {
@@ -59,10 +61,11 @@ input {
     height: 30px;
     width: 150px;
     padding-left: 10px;
+    border-radius: 10px;
 }
 
 #user-settings {
-    height: 100px;
+    height: 80px;
     margin: 10px 0;
     text-align: center;
 }
@@ -72,6 +75,52 @@ button:hover {
     color: #F0F4F6;
 }
 
-.alertWindow {
-    background-color: red;
-}
+/* styling the modal */
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4);
+  }
+  
+  /* Modal Content/Box */
+  .modal-content {
+    opacity: 90%;
+    background-color: #D5DFE5;
+    margin: 15% auto;
+    padding: 20px;
+    border: none;
+    width: 350px;
+    text-align: center;
+  }
+
+  .modalButtons {
+    font-size: 14px;
+    width: 125px;
+    background-color: #3C5462;
+    color: #F0F4F6;
+  }
+
+  .modalButtons:hover {
+    background-color: #C2D1DA;
+    color: #3C5462;
+  }
+
+  #result-display {
+    color: #3C5462;
+    font-size: 24px;
+    padding-bottom: 10px;
+  }
+
+  #buttons-container {
+      display: flex;
+      justify-content: space-evenly;
+      margin: auto;
+      width: 50%;
+  }
