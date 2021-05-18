@@ -85,26 +85,43 @@ const Player = (name, marker) => {
 // game module handles UI, checks/decalres winner, generates computer play, instantiates players
 const executeGame = (function() {
 
-    const gameModeButtons = document.querySelectorAll(`.chooseGame`)
+    const settingsContainer = document.querySelector(`#user-settings`);
+    const gameModeButtons = document.querySelectorAll(`.chooseGame`);
     const buttonsContainer = document.querySelector(`#buttons-container`);
     const userSettings = document.querySelector(`#inputs-container`);
 
     gameModeButtons.forEach( (button) => {
-        button.addEventListener(`click`, (e) => {
-            if (!onePlayer && !twoPlayer) {
-                if (e.currentTarget.id === `twoPlayer`) {
-                    twoPlayer = true;
-                    displayNameFields();
-                } else {
-                    onePlayer = true;
-                    playerO = Player(`Computer`, `O`);
-                    displayNameFields();
-                }
-                buttonsContainer.removeChild(gameModeButtons[0]);
-                buttonsContainer.removeChild(gameModeButtons[1]);
-            }
-        })
+        button.addEventListener(`click`, buttonEvent)
+        // (e) => {
+        //     if (!onePlayer && !twoPlayer) {
+        //         if (e.currentTarget.id === `twoPlayer`) {
+        //             twoPlayer = true;
+        //             displayNameFields();
+        //         } else {
+        //             onePlayer = true;
+        //             playerO = Player(`Computer`, `O`);
+        //             displayNameFields();
+        //         }
+        //         buttonsContainer.removeChild(gameModeButtons[0]);
+        //         buttonsContainer.removeChild(gameModeButtons[1]);
+        //     }
+        // })
     })
+
+    function buttonEvent(e) {
+        if (!onePlayer && !twoPlayer) {
+            if (e.currentTarget.id === `twoPlayer`) {
+                twoPlayer = true;
+                displayNameFields();
+            } else {
+                onePlayer = true;
+                playerO = Player(`Computer`, `O`);
+                displayNameFields();
+            }
+            buttonsContainer.removeChild(gameModeButtons[0]);
+            buttonsContainer.removeChild(gameModeButtons[1]);
+        }
+    }
 
     function displayNameFields() {      // creates appropriate name inputs when button for number of players is selected
         if (onePlayer || twoPlayer) {
@@ -149,6 +166,27 @@ const executeGame = (function() {
                 }
             })
         })
+    }
+
+    function buildButtons() {
+        const onePlayerButton = document.createElement(`button`);
+        onePlayerButton.textContent = `One Player`;
+        onePlayerButton.classList.add(`chooseGame`)
+        onePlayerButton.setAttribute(`id`, `onePlayer`);
+        onePlayerButton.addEventListener(`click`, buttonEvent)
+        buttonsContainer.appendChild(onePlayerButton);
+    
+        const twoPlayerButton = document.createElement(`button`);
+        twoPlayerButton.textContent = `Two Players`;
+        twoPlayerButton.classList.add(`chooseGame`)
+        twoPlayerButton.setAttribute(`id`, `twoPlayer`);
+        twoPlayerButton.addEventListener(`click`, buttonEvent)
+        buttonsContainer.appendChild(twoPlayerButton);
+
+        // const newButtons = document.querySelectorAll(`.chooseGame`);
+        // newButtons.forEach( (button) => {
+        //     button.addEventListener(`click`, buttonEvent)
+        // })
     }
 
     // function displayPlayers(e) {
@@ -203,6 +241,7 @@ const executeGame = (function() {
         const resultModal = document.querySelector(`#resultModal`);
         const resultMessage = document.querySelector(`#result-display`);
         const playAgainButton = document.querySelector(`#play-again`);
+        const changeSettingsButton = document.querySelector(`#change-settings`);
         gameOver = true;
         if (result !== `Tie game!`) {
             resultMessage.textContent = `${result} wins!`;
@@ -211,6 +250,7 @@ const executeGame = (function() {
         }
         resultModal.style.display = `block`;
         playAgainButton.addEventListener(`click`, playAgain);
+        changeSettingsButton.addEventListener(`click`, changeSettings);
         return {resultModal}
     }
 
@@ -218,6 +258,16 @@ const executeGame = (function() {
         gameBoard.clearBoard();
         resultModal.style.display = `none`;
         gameOver = false;
+    }
+
+    function changeSettings() {
+        playAgain();
+        onePlayer = null;
+        twoPlayer = null;
+        playerX = null;
+        playerO = null;
+        settingsContainer.removeChild(userSettings);
+        buildButtons();
     }
 
     return { 
