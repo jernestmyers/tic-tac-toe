@@ -9,16 +9,12 @@ const gameBoard = (function() {
 
     let gameMoves = [null, null, null, null, null, null, null, null, null];
     let currentMove = `X`;
-    // let numberOfMoves = gameMoves.filter(move => move).length;
 
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
         grid.addEventListener(`click`, (e) => {
             let numberOfMoves = gameMoves.filter(move => move).length;
-            // console.log(e.currentTarget.textContent);
-            // console.log(currentMove);
-            // console.log(onePlayer);
-            // console.log(gameOver);
+
             if (!playerX) {                             // instantiates playerX object if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
@@ -35,11 +31,8 @@ const gameBoard = (function() {
             if (!gameOver && !e.currentTarget.textContent && onePlayer && currentMove === `X`) {    // populates the board for a one person game vs computer
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves(index, currentMove);
-                console.log(currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
-                console.log(currentMove);
                 numberOfMoves = gameMoves.filter(move => move).length;
-                console.log(numberOfMoves);
                 while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8) {
                     executeGame.computerPlayEasy();
                 }
@@ -57,16 +50,12 @@ const gameBoard = (function() {
     }
 
     function displayMoves(index, marker) {       // also toggles player marker
-        // gameMoves.forEach( (moveToDisplay, index, gameMoves) => {
-        //     console.log({moveToDisplay});
-        //     gridsToSelect[index].textContent = moveToDisplay;
         gridsToSelect[index].textContent = marker;
             if (currentMove === playerX.marker) {
                 currentMove = playerO.marker;
             } else {
                 currentMove = playerX.marker;
             }
-        // });
     }
 
     return {
@@ -158,7 +147,6 @@ const executeGame = (function() {
 
     function checkForWinner( move , board ) {
         let movesMade = board.filter(moves => moves).length
-        console.log(`board: ${board}, ${move} and movesMade: ${movesMade}`);
         if (
             (board[0] && (board[0] === board[1]) && (board[1] === board[2])) ||
             (board[3] && (board[3] === board[4]) && (board[4] === board[5])) ||
