@@ -86,6 +86,9 @@ const Player = (name, marker) => {
 const executeGame = (function() {
 
     const gameModeButtons = document.querySelectorAll(`.chooseGame`)
+    const buttonsContainer = document.querySelector(`#buttons-container`);
+    const userSettings = document.querySelector(`#inputs-container`);
+
     gameModeButtons.forEach( (button) => {
         button.addEventListener(`click`, (e) => {
             if (!onePlayer && !twoPlayer) {
@@ -97,12 +100,13 @@ const executeGame = (function() {
                     playerO = Player(`Computer`, `O`);
                     displayNameFields();
                 }
+                buttonsContainer.removeChild(gameModeButtons[0]);
+                buttonsContainer.removeChild(gameModeButtons[1]);
             }
         })
     })
 
     function displayNameFields() {      // creates appropriate name inputs when button for number of players is selected
-        const userSettings = document.querySelector(`#inputs-container`);
         if (onePlayer || twoPlayer) {
             const labelX = document.createElement(`label`);
             labelX.textContent = `Player X: `;
@@ -138,13 +142,27 @@ const executeGame = (function() {
                 const userMarker = e.target.dataset.marker;
                 if (e.target.dataset.marker === `X`) {
                     playerX = Player(userName, userMarker);
+                    // displayPlayers(e);
                 } else if (twoPlayer) {
                     playerO = Player(userName, userMarker);
+                    // displayPlayers(e);
                 }
             })
         })
     }
 
+    // function displayPlayers(e) {
+    //     const settingsContainer = document.querySelector(`#user-settings`);
+    //     const namesToDisplay = document.createElement(`p`);
+    //     settingsContainer.removeChild(userSettings);
+    //     if (onePlayer) {
+    //         namesToDisplay.textContent = `${playerX.name} vs. Computer`;
+    //     } else {
+    //         namesToDisplay.textContent = `${playerX.name} vs. ${playerO.name}`;
+    //     }
+    //     buttonsContainer.appendChild(namesToDisplay);
+    // }
+    
     function checkForWinner( move , board ) {
         let movesMade = board.filter(moves => moves).length
         if (
@@ -198,7 +216,6 @@ const executeGame = (function() {
 
     function playAgain() {
         gameBoard.clearBoard();
-        gameBoard.gameMoves = [null, null, null, null, null, null, null, null, null];
         resultModal.style.display = `none`;
         gameOver = false;
     }
