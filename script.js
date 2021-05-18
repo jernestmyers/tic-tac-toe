@@ -33,12 +33,21 @@ const gameBoard = (function() {
                 displayMoves(index, currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
                 numberOfMoves = gameMoves.filter(move => move).length;
-                while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8) {
-                    executeGame.computerPlayEasy();
+                while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8 && currentMove === `O`) {
+                    computerPlayEasy();
                 }
             }
         })
     })
+
+    function computerPlayEasy() {
+        let cpuIndex = Math.floor(Math.random() * 9);
+        if (!gameMoves[cpuIndex]) {
+            gameMoves[cpuIndex] = `O`;
+            displayMoves(cpuIndex, `O`);
+        }
+        executeGame.checkForWinner(`X`, gameMoves);
+    }
 
     function clearBoard() {
         gridsToSelect.forEach( (grid) => {
@@ -136,15 +145,6 @@ const executeGame = (function() {
         })
     }
 
-    let computerPlayEasy = () => {
-        let cpuIndex = Math.floor(Math.random() * 9);
-        if (!gameBoard.gameMoves[cpuIndex]) {
-            gameBoard.gameMoves[cpuIndex] = `O`;
-            gameBoard.displayMoves(cpuIndex, `O`);
-        }
-        executeGame.checkForWinner(`X`, gameBoard.gameMoves);
-    }
-
     function checkForWinner( move , board ) {
         let movesMade = board.filter(moves => moves).length
         if (
@@ -206,6 +206,5 @@ const executeGame = (function() {
     return { 
                 checkForWinner, 
                 declareWinner,
-                computerPlayEasy,
             }
 })();
