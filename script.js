@@ -120,8 +120,11 @@ const executeGame = (function() {
                 playerO = Player(`Computer`, `O`);
                 displayNameFields();
             }
-            buttonsContainer.removeChild(gameModeButtons[0]);
-            buttonsContainer.removeChild(gameModeButtons[1]);
+            while (buttonsContainer.firstChild) {
+                buttonsContainer.removeChild(buttonsContainer.firstChild);
+            }
+            // buttonsContainer.removeChild(gameModeButtons[0]);
+            // buttonsContainer.removeChild(gameModeButtons[1]);
         }
     }
 
@@ -196,11 +199,15 @@ const executeGame = (function() {
         const namesToDisplay = document.createElement(`p`);
         if (onePlayer) {
             namesToDisplay.textContent = `${playerX.name} vs. Computer`;
-            settingsContainer.removeChild(userSettings);
+            while (userSettings.firstChild) {
+                userSettings.removeChild(userSettings.firstChild);
+            }
             buttonsContainer.appendChild(namesToDisplay);
         } else if (twoPlayer && ((e.target.dataset.marker === `O` && e.target.value) || (playerX.name === `anonymous` && playerX.name === playerO.name))) {
             namesToDisplay.textContent = `${playerX.name} vs. ${playerO.name}`;
-            settingsContainer.removeChild(userSettings);
+            while (userSettings.firstChild) {
+                userSettings.removeChild(userSettings.firstChild);
+            }
             buttonsContainer.appendChild(namesToDisplay);
         }
     }
@@ -270,7 +277,10 @@ const executeGame = (function() {
         twoPlayer = null;
         playerX = null;
         playerO = null;
-        settingsContainer.removeChild(userSettings);
+        while (buttonsContainer.firstChild) {
+            buttonsContainer.removeChild(buttonsContainer.firstChild)
+        }
+        // settingsContainer.removeChild(userSettings);
         buildButtons();
     }
 
