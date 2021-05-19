@@ -159,10 +159,10 @@ const executeGame = (function() {
                 const userMarker = e.target.dataset.marker;
                 if (e.target.dataset.marker === `X`) {
                     playerX = Player(userName, userMarker);
-                    // displayPlayers(e);
+                    displayPlayers(e);
                 } else if (twoPlayer) {
                     playerO = Player(userName, userMarker);
-                    // displayPlayers(e);
+                    displayPlayers(e);
                 }
             })
         })
@@ -189,17 +189,19 @@ const executeGame = (function() {
         // })
     }
 
-    // function displayPlayers(e) {
-    //     const settingsContainer = document.querySelector(`#user-settings`);
-    //     const namesToDisplay = document.createElement(`p`);
-    //     settingsContainer.removeChild(userSettings);
-    //     if (onePlayer) {
-    //         namesToDisplay.textContent = `${playerX.name} vs. Computer`;
-    //     } else {
-    //         namesToDisplay.textContent = `${playerX.name} vs. ${playerO.name}`;
-    //     }
-    //     buttonsContainer.appendChild(namesToDisplay);
-    // }
+    function displayPlayers(e) {
+        const settingsContainer = document.querySelector(`#user-settings`);
+        const namesToDisplay = document.createElement(`p`);
+        if (onePlayer) {
+            namesToDisplay.textContent = `${playerX.name} vs. Computer`;
+            settingsContainer.removeChild(userSettings);
+            buttonsContainer.appendChild(namesToDisplay);
+        } else if (twoPlayer && e.target.dataset.marker === `O` && e.target.value) {
+            namesToDisplay.textContent = `${playerX.name} vs. ${playerO.name}`;
+            settingsContainer.removeChild(userSettings);
+            buttonsContainer.appendChild(namesToDisplay);
+        }
+    }
     
     function checkForWinner( move , board ) {
         let movesMade = board.filter(moves => moves).length
