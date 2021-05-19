@@ -18,9 +18,11 @@ const gameBoard = (function() {
             if (!playerX) {                             // instantiates playerX object if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
+                executeGame.displayPlayers(e);
             }
             if (!playerO && twoPlayer) {                // instantiates playerO object if input is blank and two player game is selected
                 playerO = Player(`anonymous`, `O`);
+                executeGame.displayPlayers(e);
             }
             const index = e.currentTarget.dataset.indexNumber;
             if (!gameOver && !e.currentTarget.textContent && twoPlayer) {   // populates the board for a two-player game
@@ -196,7 +198,7 @@ const executeGame = (function() {
             namesToDisplay.textContent = `${playerX.name} vs. Computer`;
             settingsContainer.removeChild(userSettings);
             buttonsContainer.appendChild(namesToDisplay);
-        } else if (twoPlayer && e.target.dataset.marker === `O` && e.target.value) {
+        } else if (twoPlayer && ((e.target.dataset.marker === `O` && e.target.value) || (playerX.name === `anonymous` && playerX.name === playerO.name))) {
             namesToDisplay.textContent = `${playerX.name} vs. ${playerO.name}`;
             settingsContainer.removeChild(userSettings);
             buttonsContainer.appendChild(namesToDisplay);
@@ -275,5 +277,6 @@ const executeGame = (function() {
     return { 
                 checkForWinner, 
                 declareWinner,
+                displayPlayers,
             }
 })();
