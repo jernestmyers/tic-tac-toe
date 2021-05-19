@@ -15,12 +15,14 @@ const gameBoard = (function() {
         grid.addEventListener(`click`, (e) => {
             let numberOfMoves = gameMoves.filter(move => move).length;
 
-            if (!playerX) {                             // instantiates playerX object if input is blank
+            if (!playerX && onePlayer) {                             // instantiates playerX object if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
                 executeGame.displayPlayers(e);
             }
-            if (!playerO && twoPlayer) {                // instantiates playerO object if input is blank and two player game is selected
+            if (!playerO && twoPlayer) {                            // instantiates both player objects if input is blank
+                playerX = Player(`anonymous`, `X`);
+                currentMove = playerX.marker;          
                 playerO = Player(`anonymous`, `O`);
                 executeGame.displayPlayers(e);
             }
