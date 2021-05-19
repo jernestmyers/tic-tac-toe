@@ -74,6 +74,7 @@ input {
     height: 50px;
     margin: 10px 0;
     text-align: center;
+    /* border: 1px solid blue; */
 }
 
 button:hover {
@@ -135,4 +136,9 @@ button:hover {
       justify-content: space-evenly;
       margin: auto;
       width: 350px;
+      /* border: 1px solid red; */
   }
+
+  /* #inputs-container {
+      border: 1px solid yellow;
+  } */
