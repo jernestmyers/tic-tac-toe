@@ -20,7 +20,7 @@ const gameBoard = (function() {
                 currentMove = playerX.marker;
                 executeGame.displayPlayers(e);
             }
-            if (!playerO && twoPlayer) {                            // instantiates both player objects if input is blank
+            if ((!playerX || !playerO) && twoPlayer) {                            // instantiates both player objects if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;          
                 playerO = Player(`anonymous`, `O`);
@@ -96,22 +96,7 @@ const executeGame = (function() {
 
     gameModeButtons.forEach( (button) => {
         button.addEventListener(`click`, buttonEvent)
-        // (e) => {
-        //     if (!onePlayer && !twoPlayer) {
-        //         if (e.currentTarget.id === `twoPlayer`) {
-        //             twoPlayer = true;
-        //             displayNameFields();
-        //         } else {
-        //             onePlayer = true;
-        //             playerO = Player(`Computer`, `O`);
-        //             displayNameFields();
-        //         }
-        //         buttonsContainer.removeChild(gameModeButtons[0]);
-        //         buttonsContainer.removeChild(gameModeButtons[1]);
-        //     }
-        // })
     })
-
     function buttonEvent(e) {
         if (!onePlayer && !twoPlayer) {
             if (e.currentTarget.id === `twoPlayer`) {
@@ -125,8 +110,6 @@ const executeGame = (function() {
             while (buttonsContainer.firstChild) {
                 buttonsContainer.removeChild(buttonsContainer.firstChild);
             }
-            // buttonsContainer.removeChild(gameModeButtons[0]);
-            // buttonsContainer.removeChild(gameModeButtons[1]);
         }
     }
 
@@ -189,11 +172,6 @@ const executeGame = (function() {
         twoPlayerButton.setAttribute(`id`, `twoPlayer`);
         twoPlayerButton.addEventListener(`click`, buttonEvent)
         buttonsContainer.appendChild(twoPlayerButton);
-
-        // const newButtons = document.querySelectorAll(`.chooseGame`);
-        // newButtons.forEach( (button) => {
-        //     button.addEventListener(`click`, buttonEvent)
-        // })
     }
 
     function displayPlayers(e) {
@@ -282,7 +260,6 @@ const executeGame = (function() {
         while (buttonsContainer.firstChild) {
             buttonsContainer.removeChild(buttonsContainer.firstChild)
         }
-        // settingsContainer.removeChild(userSettings);
         buildButtons();
     }
 
