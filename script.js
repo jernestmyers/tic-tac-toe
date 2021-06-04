@@ -1,8 +1,8 @@
 let playerX;
 let playerO;
-let gameOver;
-let onePlayer;
-let twoPlayer;
+let isGameOver;
+let isOnePlayer;
+let isTwoPlayer;
 
 // gameBoard listens for moves and updates the gameboard
 const gameBoard = (function() {
@@ -15,29 +15,29 @@ const gameBoard = (function() {
         grid.addEventListener(`click`, (e) => {
             let numberOfMoves = gameMoves.filter(move => move).length;
 
-            if (!playerX && onePlayer) {                             // instantiates playerX object if input is blank
+            if (!playerX && isOnePlayer) {                             // instantiates playerX object if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;
                 executeGame.displayPlayers(e);
             }
-            if ((!playerX || !playerO) && twoPlayer) {                            // instantiates both player objects if input is blank
+            if ((!playerX || !playerO) && isTwoPlayer) {               // instantiates both player objects if input is blank
                 playerX = Player(`anonymous`, `X`);
                 currentMove = playerX.marker;          
                 playerO = Player(`anonymous`, `O`);
                 executeGame.displayPlayers(e);
             }
             const index = e.currentTarget.dataset.indexNumber;
-            if (!gameOver && !e.currentTarget.textContent && twoPlayer) {   // populates the board for a two-player game
+            if (!isGameOver && !e.currentTarget.textContent && isTwoPlayer) {   // populates the board for a two-player game
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves(index, currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
             }
-            if (!gameOver && !e.currentTarget.textContent && onePlayer && currentMove === `X`) {    // populates the board for a one person game vs computer
+            if (!isGameOver && !e.currentTarget.textContent && isOnePlayer && currentMove === `X`) {    // populates the board for a one person game vs computer
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves(index, currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
                 numberOfMoves = gameMoves.filter(move => move).length;
-                while (!gameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8 && currentMove === `O`) {
+                while (!isGameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8 && currentMove === `O`) {
                     computerPlayEasy();
                 }
             }
@@ -98,12 +98,12 @@ const executeGame = (function() {
         button.addEventListener(`click`, buttonEvent)
     })
     function buttonEvent(e) {
-        if (!onePlayer && !twoPlayer) {
-            if (e.currentTarget.id === `twoPlayer`) {
-                twoPlayer = true;
+        if (!isOnePlayer && !isTwoPlayer) {
+            if (e.currentTarget.id === `isTwoPlayer`) {
+                isTwoPlayer = true;
                 displayNameFields();
             } else {
-                onePlayer = true;
+                isOnePlayer = true;
                 playerO = Player(`Computer`, `O`);
                 displayNameFields();
             }
@@ -114,7 +114,7 @@ const executeGame = (function() {
     }
 
     function displayNameFields() {      // creates appropriate name inputs when button for number of players is selected
-        if (onePlayer || twoPlayer) {
+        if (isOnePlayer || isTwoPlayer) {
             const labelX = document.createElement(`label`);
             labelX.textContent = `Player X: `;
             labelX.setAttribute(`for`, `playerX`);
@@ -128,7 +128,7 @@ const executeGame = (function() {
             inputX.setAttribute(`name`, `playerX`);
             userSettings.appendChild(inputX);
         }
-        if (twoPlayer) {
+        if (isTwoPlayer) {
             const labelO = document.createElement(`label`);
             labelO.textContent = `Player O: `;
             labelO.setAttribute(`for`, `playerO`);
@@ -150,7 +150,7 @@ const executeGame = (function() {
                 if (e.target.dataset.marker === `X`) {
                     playerX = Player(userName, userMarker);
                     displayPlayers(e);
-                } else if (twoPlayer) {
+                } else if (isTwoPlayer) {
                     playerO = Player(userName, userMarker);
                     displayPlayers(e);
                 }
@@ -159,31 +159,31 @@ const executeGame = (function() {
     }
 
     function buildButtons() {
-        const onePlayerButton = document.createElement(`button`);
-        onePlayerButton.textContent = `One Player`;
-        onePlayerButton.classList.add(`chooseGame`)
-        onePlayerButton.setAttribute(`id`, `onePlayer`);
-        onePlayerButton.addEventListener(`click`, buttonEvent)
-        buttonsContainer.appendChild(onePlayerButton);
+        const isOnePlayerButton = document.createElement(`button`);
+        isOnePlayerButton.textContent = `One Player`;
+        isOnePlayerButton.classList.add(`chooseGame`)
+        isOnePlayerButton.setAttribute(`id`, `isOnePlayer`);
+        isOnePlayerButton.addEventListener(`click`, buttonEvent)
+        buttonsContainer.appendChild(isOnePlayerButton);
     
-        const twoPlayerButton = document.createElement(`button`);
-        twoPlayerButton.textContent = `Two Players`;
-        twoPlayerButton.classList.add(`chooseGame`)
-        twoPlayerButton.setAttribute(`id`, `twoPlayer`);
-        twoPlayerButton.addEventListener(`click`, buttonEvent)
-        buttonsContainer.appendChild(twoPlayerButton);
+        const isTwoPlayerButton = document.createElement(`button`);
+        isTwoPlayerButton.textContent = `Two Players`;
+        isTwoPlayerButton.classList.add(`chooseGame`)
+        isTwoPlayerButton.setAttribute(`id`, `isTwoPlayer`);
+        isTwoPlayerButton.addEventListener(`click`, buttonEvent)
+        buttonsContainer.appendChild(isTwoPlayerButton);
     }
 
     function displayPlayers(e) {
         const settingsContainer = document.querySelector(`#user-settings`);
         const namesToDisplay = document.createElement(`p`);
-        if (onePlayer) {
+        if (isOnePlayer) {
             namesToDisplay.textContent = `${playerX.name} vs. Computer`;
             while (userSettings.firstChild) {
                 userSettings.removeChild(userSettings.firstChild);
             }
             buttonsContainer.appendChild(namesToDisplay);
-        } else if (twoPlayer && ((e.target.dataset.marker === `O` && e.target.value) || (playerX.name === `anonymous` && playerX.name === playerO.name))) {
+        } else if (isTwoPlayer && ((e.target.dataset.marker === `O` && e.target.value) || (playerX.name === `anonymous` && playerX.name === playerO.name))) {
             namesToDisplay.textContent = `${playerX.name} vs. ${playerO.name}`;
             while (userSettings.firstChild) {
                 userSettings.removeChild(userSettings.firstChild);
@@ -233,7 +233,7 @@ const executeGame = (function() {
         const resultMessage = document.querySelector(`#result-display`);
         const playAgainButton = document.querySelector(`#play-again`);
         const changeSettingsButton = document.querySelector(`#change-settings`);
-        gameOver = true;
+        isGameOver = true;
         if (result !== `Tie game!`) {
             resultMessage.textContent = `${result} wins!`;
         } else {
@@ -248,13 +248,13 @@ const executeGame = (function() {
     function playAgain() {
         gameBoard.clearBoard();
         resultModal.style.display = `none`;
-        gameOver = false;
+        isGameOver = false;
     }
 
     function changeSettings() {
         playAgain();
-        onePlayer = null;
-        twoPlayer = null;
+        isOnePlayer = null;
+        isTwoPlayer = null;
         playerX = null;
         playerO = null;
         while (buttonsContainer.firstChild) {
