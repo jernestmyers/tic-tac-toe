@@ -227,20 +227,36 @@ const executeGame = (function() {
     }
 
     function declareWinner(move) {
-        if (move === playerO.marker) {
-            if (playerX.name === `anonymous`) {
-                alertWinner(`Player X`);
-            } else {
-                alertWinner(playerX.name);
+        let winnerToDeclare;
+
+        const mapWinners = new Map([
+            [`winOption1`, [`O`, playerX.name === `anonymous`, `Player X`]],
+            [`winOption2`, [`O`, playerX.name !== `anonymous`, playerX.name]],
+            [`winOption3`, [`X`, playerO.name === `anonymous`, `Player O`]],
+            [`winOption4`, [`X`, playerO.name !== `anonymous`, playerO.name]],
+          ])
+
+          mapWinners.forEach( (winOptionValues) => {
+            if (move === winOptionValues[0] && winOptionValues[1]) {
+              winnerToDeclare = winOptionValues[2];
             }
-        }
-        if (move === playerX.marker) {
-            if (playerO.name === `anonymous`) {
-                alertWinner(`Player O`);
-            } else {
-                alertWinner(playerO.name);
-            }
-        }
+            return alertWinner(winnerToDeclare);
+          })
+
+        // if (move === playerO.marker) {
+        //     if (playerX.name === `anonymous`) {
+        //         alertWinner(`Player X`);
+        //     } else {
+        //         alertWinner(playerX.name);
+        //     }
+        // }
+        // if (move === playerX.marker) {
+        //     if (playerO.name === `anonymous`) {
+        //         alertWinner(`Player O`);
+        //     } else {
+        //         alertWinner(playerO.name);
+        //     }
+        // }
     }
 
     function alertWinner(result) {
