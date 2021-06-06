@@ -10,22 +10,36 @@ const gameBoard = (function() {
     let gameMoves = [null, null, null, null, null, null, null, null, null];
     let currentMove = `X`;
 
+    function setAnonymousPlayers(e) {
+        if (!playerX && isOnePlayer) {                             // instantiates playerX object if input is blank
+            playerX = Player(`anonymous`, `X`);
+            currentMove = playerX.marker;
+            executeGame.displayPlayers(e);
+        }
+        if ((!playerX || !playerO) && isTwoPlayer) {               // instantiates both player objects if input is blank
+            playerX = Player(`anonymous`, `X`);
+            currentMove = playerX.marker;          
+            playerO = Player(`anonymous`, `O`);
+            executeGame.displayPlayers(e);
+        }
+    }
+
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
         grid.addEventListener(`click`, (e) => {
             let numberOfMoves = gameMoves.filter(move => move).length;
-
-            if (!playerX && isOnePlayer) {                             // instantiates playerX object if input is blank
-                playerX = Player(`anonymous`, `X`);
-                currentMove = playerX.marker;
-                executeGame.displayPlayers(e);
-            }
-            if ((!playerX || !playerO) && isTwoPlayer) {               // instantiates both player objects if input is blank
-                playerX = Player(`anonymous`, `X`);
-                currentMove = playerX.marker;          
-                playerO = Player(`anonymous`, `O`);
-                executeGame.displayPlayers(e);
-            }
+            setAnonymousPlayers(e)
+            // if (!playerX && isOnePlayer) {                             // instantiates playerX object if input is blank
+            //     playerX = Player(`anonymous`, `X`);
+            //     currentMove = playerX.marker;
+            //     executeGame.displayPlayers(e);
+            // }
+            // if ((!playerX || !playerO) && isTwoPlayer) {               // instantiates both player objects if input is blank
+            //     playerX = Player(`anonymous`, `X`);
+            //     currentMove = playerX.marker;          
+            //     playerO = Player(`anonymous`, `O`);
+            //     executeGame.displayPlayers(e);
+            // }
             const index = e.currentTarget.dataset.indexNumber;
             if (!isGameOver && !e.currentTarget.textContent && isTwoPlayer) {   // populates the board for a two-player game
                 gameMoves.splice(index, 1, currentMove);
@@ -36,7 +50,7 @@ const gameBoard = (function() {
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves(index, currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
-                numberOfMoves = gameMoves.filter(move => move).length;
+                numberOfMoves = gameMoves.filter(move => !!move).length;
                 while (!isGameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8 && currentMove === `O`) {
                     computerPlayEasy();
                 }
