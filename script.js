@@ -27,7 +27,7 @@ const gameBoard = (function() {
     const gridsToSelect = document.querySelectorAll(`.gameGrid`);
     gridsToSelect.forEach( (grid) => {
         grid.addEventListener(`click`, (e) => {
-            let numberOfMoves = gameMoves.filter(move => move).length;
+            let numberOfMovesPlayed = gameMoves.filter(move => !!move).length;
             setAnonymousPlayers(e)
             // if (!playerX && isOnePlayer) {                             // instantiates playerX object if input is blank
             //     playerX = Player(`anonymous`, `X`);
@@ -50,8 +50,8 @@ const gameBoard = (function() {
                 gameMoves.splice(index, 1, currentMove);
                 displayMoves(index, currentMove);
                 executeGame.checkForWinner(currentMove, gameMoves);
-                numberOfMoves = gameMoves.filter(move => !!move).length;
-                while (!isGameOver && numberOfMoves === gameMoves.filter(move => move).length && gameMoves.filter(move => move).length < 8 && currentMove === `O`) {
+                numberOfMovesPlayed = gameMoves.filter(move => !!move).length;
+                while (!isGameOver && numberOfMovesPlayed === gameMoves.filter(move => !!move).length && gameMoves.filter(move => !!move).length < 8 && currentMove === `O`) {
                     computerPlayEasy();
                 }
             }
@@ -72,7 +72,7 @@ const gameBoard = (function() {
             grid.textContent = null;
         })
         currentMove = `X`;
-        numberOfMoves = null;
+        numberOfMovesPlayed = 0;
         gameMoves = [null, null, null, null, null, null, null, null, null];
     }
 
