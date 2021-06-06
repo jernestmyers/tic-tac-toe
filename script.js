@@ -207,7 +207,8 @@ const executeGame = (function() {
     }
     
     function checkForWinner( move , board ) {
-        let movesMade = board.filter(moves => moves).length
+        const movesMade = board.filter(moves => !!moves).length
+        const maxMovesPossible = 9;
         if (
             (board[0] && (board[0] === board[1]) && (board[1] === board[2])) ||
             (board[3] && (board[3] === board[4]) && (board[4] === board[5])) ||
@@ -220,7 +221,7 @@ const executeGame = (function() {
             ) 
             { 
                 declareWinner( move );
-            } else if (movesMade === 9) {
+            } else if (movesMade === maxMovesPossible) {
                 alertWinner(`Tie game!`);
             }
     }
